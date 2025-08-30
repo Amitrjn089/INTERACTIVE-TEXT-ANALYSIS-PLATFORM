@@ -1,2 +1,7 @@
+streamlit
 plotly
 spacy
+wordcloud
+matplotlib
+pandas
+numpy
