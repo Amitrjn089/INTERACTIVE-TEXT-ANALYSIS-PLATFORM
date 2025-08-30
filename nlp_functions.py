@@ -6,13 +6,24 @@ import streamlit as st
 from nltk.util import ngrams
 from collections import Counter, defaultdict
 import plotly.graph_objects as go
-import spacy
+
 from transformers import pipeline
 import pandas as pd
 
+import spacy
+import subprocess
+import sys
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm")
+
+
 # ----- Load heavy models ONCE (module scope) -----
 # Make sure you have downloaded the spacy model (see installation steps below)
-nlp = spacy.load("en_core_web_sm")
+
 
 # Emotion classifier: return_all_scores=True makes results predictable (list of lists)
 EMOTION_MODEL = "j-hartmann/emotion-english-distilroberta-base"
@@ -233,3 +244,4 @@ def summarize_large_text(text: str, chunk_max_chars: int = 500) -> str:
     final_min = min(150, max(20, int(combined_words * 0.15)))
     final_out = SUMMARIZER(combined, max_length=final_max, min_length=final_min, do_sample=False)
     return final_out[0]["summary_text"]
+
